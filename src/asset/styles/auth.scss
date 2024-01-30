@@ -1,0 +1,43 @@
+.login-container{
+    background: url("../image/avata-login.jpg");
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $textLogin;
+    position: fixed;
+    top: 0;
+    right: 0;left: 0;
+}
+.form-login {
+    position: relative;
+    width: 420px;
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    padding: 10px 20px;
+}
+.login_method_orther{
+    padding: 10px;
+    font-size: 12px;
+    width: 49%;
+    cursor: pointer;
+    height: 42px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+.facebook{
+    background-color:$textLogin !important;
+    color: $textLight !important;
+}
+.google{
+    background-color: $textLight !important;
+}
+.icon_login{
+    font-size: 18px;
+    margin-right: 5px;
+}
