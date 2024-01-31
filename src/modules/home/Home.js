@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Space, Input, Row, Col } from 'antd';
+import { useLocation, useNavigate } from 'react-router-dom';
 // image
 import Bird from '../../asset/image/bird.jpg';
 import DrippingWatter from '../../asset/image/dripping_watter.jpg';
@@ -33,21 +34,37 @@ import { GiSoundWaves } from 'react-icons/gi';
 const { Search } = Input;
 
 const Home = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalContent, setModalContent] = useState({ title: '', image: null ,sound:''});
 
   const [isPlaying, setIsPlaying] = useState(null); 
 
   useEffect(() => {
-    const audioElement = document.getElementById('modalAudio');
+    const params = new URLSearchParams(location.search);
+    const soundParam = params.get('sound');
+    const playingParam = params.get('playing');
 
+    if (soundParam && playingParam === 'true') {
+      const sound = getSoundObject(soundParam);
+      if (sound) {
+        setModalContent(sound);
+        setIsModalVisible(true);
+        setIsPlaying(true);
+      }
+    } else {
+      setIsPlaying(false);
+    }
+  }, [location.search]);
+  
+  useEffect(() => {
+    const audioElement = document.getElementById('modalAudio');
     if (audioElement) {
       audioElement.load();
-
       audioElement.addEventListener('play', () => setIsPlaying(modalContent.sound));
       audioElement.addEventListener('pause', () => setIsPlaying(null));
     }
-
     return () => {
       if (audioElement) {
         audioElement.removeEventListener('play', () => setIsPlaying(modalContent.sound));
@@ -56,22 +73,43 @@ const Home = () => {
     };
   }, [modalContent.sound]);
 
+  const getSoundObject = (soundParam) => {
+    const soundObjects = {
+      'Bird-Sound': { title: 'Bird Sound', image: Bird, sound: BirdSound },
+      'Dripping-Water-Sound': { title: 'Dripping Water Sound', image: DrippingWatter, sound: DrippingWatterSound },
+    };
+    return soundObjects[soundParam];
+  };
+
   const showModal = (title, image, sound) => {
     setModalContent({ title, image, sound });
     setIsModalVisible(true);
-  }; 
+    // Update the URL when opening a sound modal
+    const params = new URLSearchParams(location.search);
+    params.set('sound', title.replace(/\s+/g, '-'));
+    params.set('playing', 'true');
+    navigate(`?${params}`);
+  };
 
   const handleCancel = () => {
     setIsModalVisible(false);
+    // Update the URL when closing the sound modal only if the sound is paused
+    if (!isPlaying) {
+      const params = new URLSearchParams(location.search);
+      params.delete('sound');
+      params.set('playing', 'false');
+      navigate(`?${params}`);
+    }
   };
 
   const onSearch = (value, _e, info) => console.log(info?.source, value);
 
   return (
-    <>
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 30 }}>
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 30}}>
         <Space direction="vertical">
           <Search
+            className='search_sound'
             placeholder="Search sound ..."
             allowClear
             enterButton
@@ -85,7 +123,7 @@ const Home = () => {
       </div>
       <div style={{ marginTop: 50 }}>
         <Row gutter={[16, 24]}>
-          <Col className="gutter-row" span={6}>
+          <Col className="gutter-row custom-col" lg={6} md={12} sm={12}>
           <div className={`video_sound ${isPlaying ? 'playing' : ''}`} onClick={() => showModal('Bird Sound', Bird, BirdSound)}>
             <img src={Bird} className="item_video_sound" alt="Bird Image" />
             {isPlaying === BirdSound ? (
@@ -96,7 +134,7 @@ const Home = () => {
           <div className="overlay"></div>
         </div>
           </Col>
-          <Col className="gutter-row" span={6}>
+          <Col className="gutter-row custom-col" lg={6} md={12} sm={12}>
             <div className={`video_sound ${isPlaying ? 'playing' : ''}`} onClick={() => showModal('Dripping Water Sound', DrippingWatter, DrippingWatterSound)}>
               <img src={DrippingWatter} className="item_video_sound" alt="Dripping Water Image" />
               {isPlaying === DrippingWatterSound ? (
@@ -107,7 +145,7 @@ const Home = () => {
               <div className="overlay"></div>
             </div>
           </Col>
-          <Col className="gutter-row" span={6}>
+          <Col className="gutter-row custom-col" lg={6} md={12} sm={12}>
             <div className={`video_sound ${isPlaying ? 'playing' : ''}`} onClick={() => showModal('Heaving Rain', HeavingRain,HeavingRainSound)}>
               <img src={HeavingRain} className="item_video_sound" alt="HeavingRainImage" />
                 {isPlaying === HeavingRainSound ? (
@@ -118,7 +156,7 @@ const Home = () => {
               <div className="overlay"></div>
             </div>
           </Col>
-          <Col className="gutter-row" span={6}>
+          <Col className="gutter-row custom-col" lg={6} md={12} sm={12}>
             <div className={`video_sound ${isPlaying ? 'playing' : ''}`} onClick={() => showModal('Lightning', Lightning,LightningSound)}>
               <img src={Lightning} className="item_video_sound" alt="Lightning Image" />
                 {isPlaying === LightningSound ? (
@@ -130,7 +168,7 @@ const Home = () => {
             </div>
           </Col>
 
-          <Col className="gutter-row" span={6}>
+          <Col className="gutter-row custom-col" lg={6} md={12} sm={12}>
             <div className={`video_sound ${isPlaying ? 'playing' : ''}`} onClick={() => showModal('Mountain', Mountain,MountainSound)}>
               <img src={Mountain} className="item_video_sound" alt="Mountain Image" />
                 {isPlaying === MountainSound ? (
@@ -141,7 +179,7 @@ const Home = () => {
               <div className="overlay"></div>
             </div>
           </Col>
-          <Col className="gutter-row" span={6}>
+          <Col className="gutter-row custom-col" lg={6} md={12} sm={12}>
             <div className={`video_sound ${isPlaying ? 'playing' : ''}`} onClick={() => showModal('Rain', Rain,RainSound)}>
               <img src={Rain} className="item_video_sound" alt="Rain Image" />
                 {isPlaying === RainSound ? (
@@ -152,7 +190,7 @@ const Home = () => {
               <div className="overlay"></div>
             </div>
           </Col>
-          <Col className="gutter-row" span={6}>
+          <Col className="gutter-row custom-col" lg={6} md={12} sm={12}>
             <div className={`video_sound ${isPlaying ? 'playing' : ''}`} onClick={() => showModal('River', River,RiverSound)}>
               <img src={River} className="item_video_sound" alt="River Image" />
                 {isPlaying === RiverSound ? (
@@ -163,7 +201,7 @@ const Home = () => {
               <div className="overlay"></div>
             </div>
           </Col>
-          <Col className="gutter-row" span={6}>
+          <Col className="gutter-row custom-col" lg={6} md={12} sm={12}>
             <div className={`video_sound ${isPlaying ? 'playing' : ''}`} onClick={() => showModal('WindBell', WindBell,WindBellSound)}>
               <img src={WindBell} className="item_video_sound" alt="WindBell Image" />
                 {isPlaying === WindBellSound ? (
@@ -174,7 +212,7 @@ const Home = () => {
               <div className="overlay"></div>
             </div>
           </Col>
-          <Col className="gutter-row" span={6}>
+          <Col className="gutter-row custom-col" lg={6} md={12} sm={12}>
             <div className={`video_sound ${isPlaying ? 'playing' : ''}`} onClick={() => showModal('Wind', Wind,WindSound)}>
               <img src={Wind} className="item_video_sound" alt="WindSound Image" />
                 {isPlaying === WindSound ? (
@@ -185,7 +223,7 @@ const Home = () => {
               <div className="overlay"></div>
             </div>
           </Col>
-          <Col className="gutter-row" span={6}>
+          <Col className="gutter-row custom-col" lg={6} md={12} sm={12}>
             <div className={`video_sound ${isPlaying ? 'playing' : ''}`} onClick={() => showModal('Night', Night,NightSound)}>
               <img src={Night} className="item_video_sound" alt="Night Image" />
                 {isPlaying === NightSound ? (
@@ -196,7 +234,7 @@ const Home = () => {
               <div className="overlay"></div>
             </div>
           </Col>
-          <Col className="gutter-row" span={6}>
+          <Col className="gutter-row custom-col" lg={6} md={12} sm={12}>
             <div className={`video_sound ${isPlaying ? 'playing' : ''}`} onClick={() => showModal('Frog', Frog,FrogSound)}>
               <img src={Frog} className="item_video_sound" alt="Frog Image" />
                 {isPlaying === FrogSound ? (
@@ -207,7 +245,7 @@ const Home = () => {
               <div className="overlay"></div>
             </div>
           </Col>
-          <Col className="gutter-row" span={6}>
+          <Col className="gutter-row custom-col" lg={6} md={12} sm={12}>
             <div className={`video_sound ${isPlaying ? 'playing' : ''}`} onClick={() => showModal('Bobbles watter cave',Bobbles_watter_cave, BobblesWatterCaveSound)}>
               <img src={Bobbles_watter_cave} className="item_video_sound" alt=" Bobbles watter cave" />
                 {isPlaying === BobblesWatterCaveSound ? (
@@ -221,7 +259,7 @@ const Home = () => {
         </Row>
       </div>
       <Modal
-        title={modalContent.title}
+       title={modalContent.title}
         visible={isModalVisible}
         onCancel={handleCancel}
         footer={null}
@@ -234,7 +272,7 @@ const Home = () => {
           <source src={modalContent.sound} type="audio/mp3" />
         </audio>
       </Modal>
-    </>
+    </div>
   );
 };
 

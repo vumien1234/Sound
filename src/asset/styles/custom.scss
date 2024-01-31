@@ -2,6 +2,7 @@
 
 .container{
   position: relative;
+  z-index: -1000;
 }
 // container_item
 .container_item{
@@ -11,8 +12,8 @@
   z-index: 10000;
   color: #fff;
   padding: 0 5rem;
-  z-index: -1000;
   padding-bottom: 5rem;
+
 }
 /* LoadingOverlay.css */
 .loading-overlay {
@@ -33,12 +34,11 @@
   bottom:0;
   height: 70px;
   padding: 0 80px;
-  // background-color: red;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: #fff;
-
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  background-color: #fff;
 }
 .image_avata{
   width: 40px;
@@ -129,4 +129,46 @@
   width: 650px !important;
   height: 400px !important;
   overflow: hidden;
+}
+// custom mobiphone 
+@media only screen and (max-width: 600px) {
+  .container_item {
+    padding: 0 2rem !important;
+  }
+  .wrapper_header{
+    padding: 0 20px !important;
+  }
+  .wrapper_header h1{
+    font-size: 25px;
+  }
+  .search_sound{
+    width: 300px !important;
+  }.custom-col {
+    flex: 0 0 50%;
+  }
+  .image_avata{
+    width: 30px;
+    height: 30px;
+  }
+  .ant-modal-content{
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 330px;
+    height: 400px;
+  }
+  .modalSound img{
+    width: 280px;
+    height: 300px;
+  }
+  .ant-modal-body{
+    position: relative;
+    width: 280px !important;
+    height: 300px !important;
+  }
+  .audio{
+    position: absolute;
+    height: 40px !important;
+    bottom: 0;
+  }
 }
